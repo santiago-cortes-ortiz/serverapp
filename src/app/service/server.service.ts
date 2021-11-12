@@ -1,10 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Server } from 'http';
 import { Observable, throwError } from 'rxjs';
 import { tap,catchError, subscribeOn } from 'rxjs/operators';
 import { Status } from '../enum/status.enum';
 import { CustomResponse } from '../interface/curstom-response';
+import { Server } from '../interface/server';
 
 @Injectable({
   providedIn: 'root'
