@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   readonly DataState = DataState
   readonly Status = Status
   private filterSubject = new BehaviorSubject<string>('');
+  private dataSubject = new BehaviorSubject<CustomResponse>(null);
   filterStatus$ = this.filterSubject.asObservable()
 
   constructor(private _serverService: ServerService){
@@ -28,10 +29,27 @@ export class AppComponent implements OnInit {
     .pipe(
       map(
         response => {
+          this.dataSubject.next(response)
           return { dataState: DataState.LOADED_STATE, appData: response  }
         }
       ),
       startWith({dataState: DataState.LOADING_STATE}),
+      catchError((error: string) => {
+        return of({ dataState: DataState.ERROR_STATE, error: error })
+      })
+    )
+  }
+
+  pingServer(ipAddress: string): void{
+    this.filterSubject.next(ipAddress)
+    this.appState$ = this._serverService.ping$(ipAddress)
+    .pipe(
+      map(
+        response => {
+          return { dataState: DataState.LOADED_STATE, appData: response  }
+        }
+      ),
+      startWith({dataState: DataState.LOADED_STATE, appData: this.dataSubject.value}),
       catchError((error: string) => {
         return of({ dataState: DataState.ERROR_STATE, error: error })
       })

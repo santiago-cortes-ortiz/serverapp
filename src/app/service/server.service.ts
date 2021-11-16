@@ -37,7 +37,6 @@ export class ServerService {
   .pipe(
     tap(console.log),
     catchError(this.handleError)
-
   );
 
   filter$ = (status: Status, response: CustomResponse) => <Observable<CustomResponse>>
